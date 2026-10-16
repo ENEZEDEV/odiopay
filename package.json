@@ -1,0 +1,15 @@
+{
+  "name": "odiopay",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Núcleo local de pagamentos ODIOPAY — somente sandbox",
+  "engines": { "node": ">=24.0.0 <25" },
+  "scripts": {
+    "dashboard": "node scripts/start-dashboard.js",
+    "start": "node src/main.js",
+    "test": "node --test",
+    "demo": "node scripts/demo.js",
+    "merchant": "node scripts/create-merchant.js"
+  }
+}
