@@ -11,3 +11,5 @@
 - Execute `node --test` e `node scripts/demo.js` antes de entregar alterações no núcleo.
 - Não habilite produção, repasses ou carteira sem implementar e verificar o respectivo fluxo.
 - Evite abstrações sem uso, duplicação de regras e dependências desnecessárias.
+- Ao concluir cada atualização, executar as verificações pertinentes, criar um commit descritivo e enviar ao origin. Se a autenticação impedir o envio, informar claramente o commit local e a pendência. Nunca declarar push concluído sem verificar o remoto.
+- Preservar o histórico remoto; não usar force push. Nunca versionar credenciais, bancos de demonstração ou dados pessoais.
