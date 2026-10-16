@@ -4,11 +4,16 @@ Data: 16 de outubro de 2026. Runtime: Node.js v24.19.0, Windows.
 
 ## Resultado
 
-- `node --test`: **52 testes aprovados, 0 falhas, 0 ignorados** na versão 0.3.
+- `node --test`: **78 testes aprovados, 0 falhas, 0 ignorados**, incluindo 26 novos testes do leitor Mercado Pago com transporte controlado.
 - `node scripts/demo.js`: Pix, cartão, liquidação, saldo e saque aprovados, todos simulados.
 - Nenhum serviço de pagamentos externo foi utilizado e nenhum dinheiro real foi movimentado.
 
 ## Cenários cobertos
+
+- Leitor Mercado Pago: recebedor, ID, referência, valor, moeda e método divergentes; respostas de produção; estorno parcial e estados não finais.
+- Erros HTTP, indisponibilidade, timeout antes dos headers e durante o corpo, JSON inválido e resposta excessiva.
+- Recusa de credencial produtiva e IDs que poderiam alterar a URL; token e dados de pagador não retornados.
+- Esses testes não homologam o Mercado Pago. A consulta conectada e os saques pelo parceiro ainda não foram executados.
 
 - Sessão do painel com cookie HttpOnly e SameSite=Strict, revogação no logout e ausência de API keys no frontend.
 - Origem, CSRF, leitura cross-site e cabeçalho Host adulterado.

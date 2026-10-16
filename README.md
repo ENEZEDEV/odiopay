@@ -91,6 +91,8 @@ As tarifas sandbox são exemplos: Standard Pix R$ 1; Pro Pix R$ 0,50; Standard c
 
 ## Ler e aprender
 
+Preparação para integração real: [plano de lançamento, carteira e Mercado Pago](docs/LAUNCH.md). O leitor de pagamentos de teste já tem testes locais de falhas; ainda não está conectado à carteira nem homologado com a API externa.
+
 Validação completa: `npm run check`. O GitHub Actions está configurado para executar a validação em Linux e Windows. Veja [critérios de entrega e próximos marcos](docs/DELIVERY.md).
 
 1. `src/validation.js`: contrato aceito pela API.
