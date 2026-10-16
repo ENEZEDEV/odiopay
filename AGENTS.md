@@ -1,6 +1,7 @@
 # ODIOPAY
 
 - Operação inicial brasileira, BRL, Pix e cartão. Esta entrega é exclusivamente sandbox.
+- Decisão atual de lançamento: split 1:1 Mercado Pago, contas de vendedores conectadas por OAuth e chaves próprias da ODIOPAY por lojista. Carteira própria e saques pela ODIOPAY ficam fora da primeira versão; a carteira existente é apenas simulação. Veja docs/SPLIT.md.
 - Explique decisões e evidências de teste em português.
 - Dinheiro em centavos inteiros; percentuais em basis points; nunca calcular dinheiro com ponto flutuante.
 - Todas as consultas de lojista devem aplicar o merchant_id obtido da autenticação.

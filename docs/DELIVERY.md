@@ -10,6 +10,8 @@ Não versionar bancos, credenciais, logs nem dados de clientes. Testes criam dad
 
 ## Próximos marcos verificáveis
 
+Escopo vigente: [split 1:1 Mercado Pago](SPLIT.md). Carteira e saques reais na tabela são evolução futura, fora da primeira versão.
+
 | Marco | Critério de conclusão | Dependência |
 | --- | --- | --- |
 | Identidade humana | Cadastro, login, MFA, recuperação e revogação testados; sessões reais separadas da demonstração | Escolha de provedor de identidade e fluxos do produto |

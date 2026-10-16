@@ -1,10 +1,12 @@
-# Lançamento real da ODIOPAY
+# Referência futura: carteira e saques integrados
+
+**Plano anterior, substituído pela decisão de lançamento com split.** O escopo vigente está em [SPLIT.md](SPLIT.md). Custódia própria, BaaS e saques integrados não são requisitos da primeira versão. As etapas abaixo documentam uma possível evolução futura e não representam a escolha comercial atual.
 
 Atualizado em 16/10/2026. Estado: preparação técnica; lançamento real bloqueado pelos critérios abaixo. Responsável pelo produto: NZ DEV.
 
-## Requisito confirmado
+## Requisito anterior
 
-O cliente deve visualizar saldo e solicitar saque dentro da ODIOPAY desde o lançamento. Um lançamento que exija o cliente sair para sacar na conta própria do Mercado Pago não atende ao requisito confirmado. A interface pode ser ODIOPAY enquanto uma instituição parceira mantém os recursos e executa as movimentações. Ainda falta validar e contratar esse arranjo; o saldo local do simulador não comprova custódia real.
+Antes da decisão por split, foi considerada a exigência de visualizar saldo e solicitar saque dentro da ODIOPAY desde o lançamento. Essa exigência foi retirada do escopo inicial pelo responsável. Uma eventual carteira futura dependerá de validar e contratar o arranjo adequado; o saldo local do simulador não comprova custódia real.
 
 O Mercado Pago é candidato, pois o usuário já tem conta. Não presumir que a conta existente está habilitada para operar recursos de terceiros. A documentação de [Payouts](https://www.mercadopago.com.br/developers/pt/docs/payouts/overview) descreve transferências por Pix e para contas externas. Isso demonstra uma capacidade técnica, não comprova a aprovação do modelo comercial da ODIOPAY. A [referência do BCB sobre instituições de pagamento](https://www.bcb.gov.br/estabilidadefinanceira/instituicaopagamento) deve orientar a validação profissional do arranjo; este documento não determina enquadramento regulatório.
 

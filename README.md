@@ -2,6 +2,8 @@
 
 **Desenvolvido por NZ DEV.** Painel dark com identidade NZ DEV, backend Node.js e banco SQLite. [Créditos](AUTHORS.md).
 
+**Decisão para o lançamento:** [split 1:1 com Mercado Pago](docs/SPLIT.md), contas dos vendedores conectadas por OAuth e API própria da ODIOPAY por lojista. A carteira e os saques desta demonstração são simulados; carteira própria não faz parte da primeira versão real. O split real ainda está em preparação.
+
 ## Abrir o painel
 
 ```powershell
@@ -91,7 +93,7 @@ As tarifas sandbox são exemplos: Standard Pix R$ 1; Pro Pix R$ 0,50; Standard c
 
 ## Ler e aprender
 
-Preparação para integração real: [plano de lançamento, carteira e Mercado Pago](docs/LAUNCH.md). O leitor de pagamentos de teste já tem testes locais de falhas; ainda não está conectado à carteira nem homologado com a API externa.
+Preparação para integração real: [plano de lançamento com split](docs/SPLIT.md). O leitor de pagamentos de teste já tem testes locais de falhas; ainda não foi homologado com a API externa. O [plano anterior de carteira](docs/LAUNCH.md) permanece como referência futura.
 
 Validação completa: `npm run check`. O GitHub Actions está configurado para executar a validação em Linux e Windows. Veja [critérios de entrega e próximos marcos](docs/DELIVERY.md).
 
