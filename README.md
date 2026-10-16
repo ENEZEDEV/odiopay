@@ -91,6 +91,8 @@ As tarifas sandbox são exemplos: Standard Pix R$ 1; Pro Pix R$ 0,50; Standard c
 
 ## Ler e aprender
 
+Validação completa: `npm run check`. O GitHub Actions está configurado para executar a validação em Linux e Windows. Veja [critérios de entrega e próximos marcos](docs/DELIVERY.md).
+
 1. `src/validation.js`: contrato aceito pela API.
 2. `src/payments.js`: regras de criação, tarifas e confirmação.
 3. `src/database.js`: persistência e transações.
@@ -102,7 +104,7 @@ As tarifas sandbox são exemplos: Standard Pix R$ 1; Pro Pix R$ 0,50; Standard c
 
 O cadastro local de um novo lojista gera também `destinationId`, um destino fictício pertencente ao lojista. Para solicitar saque, envie `{ "amountCents": 5000, "currency": "BRL", "destinationId": "ID_DO_DESTINO" }` para `POST /v1/withdrawals`.
 
-Uma cobrança confirmada aumenta o valor a receber. Só a liquidação simulada libera o líquido para saque. `Wallet.settlePayment` e `Wallet.finishWithdrawal` são controles locais do simulador, usados pela demonstração; não existem rotas HTTP para criar saldo ou finalizar saques arbitrariamente.
+Uma cobrança confirmada aumenta o valor a receber. Só a liquidação simulada libera o líquido para saque. `Wallet.settlePayment` e `Wallet.finishWithdrawal` são controles do simulador. A API de integração `/v1/*` não expõe esses controles; o painel local `/app-api/*` permite simular resultados somente para a loja fictícia da sessão autenticada, com proteção de origem e CSRF.
 
 Não são cobradas tarifas de saque nesta versão, pois ainda não foram definidas. Destinos não representam contas bancárias reais nem verificação de titularidade. Lojistas antigos sem destino podem usar um novo cadastro sandbox nesta etapa. Veja [regras da carteira](docs/WALLET.md).
 

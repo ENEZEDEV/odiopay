@@ -2,7 +2,7 @@
 
 ## Escopo
 
-Revisão e testes locais da versão 0.2. Não é um pentest independente, uma certificação ou uma garantia de ausência de falhas. Não foi realizado ataque contra sistemas externos.
+Revisão e testes locais da versão 0.3. Não é um pentest independente, uma certificação ou uma garantia de ausência de falhas. Não foi realizado ataque contra sistemas externos.
 
 ## Controles implementados
 
@@ -26,7 +26,7 @@ Revisão e testes locais da versão 0.2. Não é um pentest independente, uma ce
 ## Limites materiais
 
 - O controle de resultados do simulador é confiável apenas no contexto local. Quem controla o processo ou arquivo do banco controla os dados.
-- API keys são credenciais de servidor. Não há login humano, MFA, recuperação, gerenciamento de sessões ou interface de rotação/revogação. Revogação já é respeitada pela autenticação.
+- API keys são credenciais de servidor. O painel possui sessões de demonstração com expiração e logout, cookies HttpOnly/SameSite, validação de origem e CSRF. Ainda não há identidade humana real, MFA, recuperação ou interface de rotação/revogação de API keys. Revogação já é respeitada pela autenticação.
 - Limites por IP são locais ao processo. Não são proteção suficiente contra DDoS distribuído e devem evoluir para limites por identidade e integração com a infraestrutura.
 - Auditoria é uma tabela transacional local; não é um armazenamento imutável independente. Falhas de requisição são emitidas pelo logger, mas ainda não existe coleta central, alerta ou retenção operacional.
 - O SQLite não é cifrado nesta entrega. O segredo do webhook é fornecido por ambiente. Proteção de arquivos, gestão de segredos, rotação e recuperação precisam ser implementadas para o ambiente real.
