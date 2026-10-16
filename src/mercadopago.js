@@ -44,6 +44,49 @@ async function boundedJson(response) {
   }
 }
 
+// Fixed provider origin and bounded transport shared by read-only and OAuth adapters.
+export async function mercadoPagoRequest({ path, method = 'GET', headers = {}, body, fetchImpl = fetch, timeoutMs = 5000 }) {
+  requireThat(path === '/oauth/token' || path === '/v1/payments' || /^\/v1\/payments\/[1-9]\d{0,19}$/.test(path), 500, 'mp_invalid_endpoint');
+  requireThat((['/oauth/token', '/v1/payments'].includes(path) && method === 'POST') || (/^\/v1\/payments\//.test(path) && method === 'GET'), 500, 'mp_invalid_endpoint');
+  requireThat(Number.isInteger(timeoutMs) && timeoutMs >= 10 && timeoutMs <= 15000, 500, 'mp_invalid_timeout');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetchImpl(`${API}${path}`, { method, redirect: 'error', signal: controller.signal,
+      headers: { Accept: 'application/json', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }), ...headers },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+    if (!response.ok) {
+      await response.body?.cancel().catch(() => {});
+      const code = response.status === 401 || response.status === 403 ? 'mp_access_denied' :
+        response.status === 404 ? 'mp_payment_not_found' : response.status === 429 ? 'mp_rate_limited' : 'mp_unavailable';
+      throw new AppError(502, code);
+    }
+    return await boundedJson(response);
+  } catch (error) {
+    if (controller.signal.aborted) throw new AppError(504, 'mp_timeout');
+    if (error instanceof AppError) throw error;
+    throw new AppError(502, 'mp_unavailable');
+  } finally { clearTimeout(timer); }
+}
+
+export function verifiedTestPayment(body, expected, id = body?.id) {
+  const paymentId = providerId(id); const collectorId = providerId(expected.collectorId);
+  requireThat(body && typeof body === 'object' && !Array.isArray(body), 502, 'mp_invalid_response');
+  requireThat(body.live_mode === false, 502, 'mp_non_test_payment');
+  requireThat(providerId(body.id) === paymentId && providerId(body.collector_id) === collectorId &&
+    body.external_reference === expected.externalReference && body.currency_id === 'BRL' &&
+    mercadoPagoCents(body.transaction_amount) === expected.amountCents, 409, 'mp_payment_mismatch');
+  const method = body.payment_method_id === 'pix' ? 'pix' :
+    ['credit_card', 'debit_card'].includes(body.payment_type_id) ? 'card' : null;
+  requireThat(method === expected.method, 409, 'mp_payment_mismatch');
+  requireThat(statuses.has(body.status), 502, 'mp_unknown_status');
+  const refundedCents = mercadoPagoCents(body.transaction_amount_refunded);
+  requireThat(refundedCents <= expected.amountCents, 502, 'mp_invalid_amount');
+  return { id: paymentId, collectorId, externalReference: expected.externalReference,
+    amountCents: expected.amountCents, refundedCents, currency: 'BRL', method,
+    providerStatus: body.status, environment: 'test' };
+}
+
 // Read-only preparation: deliberately not plugged into Payments or the wallet.
 // The caller must load expected values from its own trusted database, never a webhook body.
 export class MercadoPagoTestReader {
@@ -60,41 +103,9 @@ export class MercadoPagoTestReader {
     requireThat(expected && typeof expected.externalReference === 'string' && expected.externalReference.length > 0 &&
       Number.isSafeInteger(expected.amountCents) && expected.amountCents > 0 &&
       ['pix', 'card'].includes(expected.method), 500, 'mp_expected_payment_required');
-    const collectorId = providerId(expected.collectorId);
-    const controller = new AbortController();
-    // Timer stays active while consuming the response body, not only until headers arrive.
-    const timer = setTimeout(() => controller.abort(), this.#timeoutMs);
-    try {
-      const response = await this.#fetch(`${API}/v1/payments/${paymentId}`, {
-        method: 'GET', redirect: 'error', signal: controller.signal,
-        headers: { Authorization: `Bearer ${this.#token}`, Accept: 'application/json' }
-      });
-      if (!response.ok) {
-        await response.body?.cancel().catch(() => {});
-        const code = response.status === 401 || response.status === 403 ? 'mp_access_denied' :
-          response.status === 404 ? 'mp_payment_not_found' : response.status === 429 ? 'mp_rate_limited' : 'mp_unavailable';
-        throw new AppError(502, code);
-      }
-      const body = await boundedJson(response);
-      requireThat(body && typeof body === 'object' && !Array.isArray(body), 502, 'mp_invalid_response');
-      requireThat(body.live_mode === false, 502, 'mp_non_test_payment');
-      requireThat(providerId(body.id) === paymentId && providerId(body.collector_id) === collectorId &&
-        body.external_reference === expected.externalReference && body.currency_id === 'BRL' &&
-        mercadoPagoCents(body.transaction_amount) === expected.amountCents, 409, 'mp_payment_mismatch');
-      const method = body.payment_method_id === 'pix' ? 'pix' :
-        ['credit_card', 'debit_card'].includes(body.payment_type_id) ? 'card' : null;
-      requireThat(method === expected.method, 409, 'mp_payment_mismatch');
-      requireThat(statuses.has(body.status), 502, 'mp_unknown_status');
-      const refundedCents = mercadoPagoCents(body.transaction_amount_refunded);
-      requireThat(refundedCents <= expected.amountCents, 502, 'mp_invalid_amount');
-      return { id: paymentId, collectorId, externalReference: expected.externalReference,
-        amountCents: expected.amountCents, refundedCents, currency: 'BRL', method,
-        providerStatus: body.status, environment: 'test' };
-    } catch (error) {
-      if (controller.signal.aborted) throw new AppError(504, 'mp_timeout');
-      if (error instanceof AppError) throw error;
-      // Do not propagate provider payloads, headers or network errors containing credentials.
-      throw new AppError(502, 'mp_unavailable');
-    } finally { clearTimeout(timer); }
+    providerId(expected.collectorId);
+      const body = await mercadoPagoRequest({ path: `/v1/payments/${paymentId}`,
+        headers: { Authorization: `Bearer ${this.#token}` }, fetchImpl: this.#fetch, timeoutMs: this.#timeoutMs });
+      return verifiedTestPayment(body, expected, paymentId);
   }
 }

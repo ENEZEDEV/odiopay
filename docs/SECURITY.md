@@ -31,7 +31,7 @@ Revisão e testes locais da versão 0.3. Não é um pentest independente, uma ce
 - Auditoria é uma tabela transacional local; não é um armazenamento imutável independente. Falhas de requisição são emitidas pelo logger, mas ainda não existe coleta central, alerta ou retenção operacional.
 - O SQLite não é cifrado nesta entrega. O segredo do webhook é fornecido por ambiente. Proteção de arquivos, gestão de segredos, rotação e recuperação precisam ser implementadas para o ambiente real.
 - A aplicação inicia no loopback e recusa modo de produção. A configuração de TLS, proxy e rede de uma implantação real ainda não foi feita.
-- O schema de protótipo está na versão 2, com novas tabelas criadas sem apagar as anteriores; ainda não há infraestrutura de migrações para atualizações de produção.
+- O schema de protótipo está na versão 3, com novas tabelas criadas sem apagar as anteriores; ainda não há infraestrutura de migrações para atualizações de produção. Os novos tokens OAuth são cifrados individualmente; o arquivo SQLite como um todo continua sem cifragem.
 - O formato do webhook é próprio do simulador. Cada parceiro real exige verificação conforme sua documentação.
 - Há liquidação, saldo e saque simulados. Ainda não há reconciliação externa, reembolsos, chargebacks, antifraude, verificação de titularidade, custódia ou execução de saques reais.
 - A API sandbox de saque usa chave de lojista. Antes de saques reais, implementar autenticação humana reforçada, autorização da transação, limites de risco, controle de destinos e reconciliação com o parceiro.

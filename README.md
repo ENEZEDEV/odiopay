@@ -4,6 +4,8 @@
 
 **Decisão para o lançamento:** [split 1:1 com Mercado Pago](docs/SPLIT.md), contas dos vendedores conectadas por OAuth e API própria da ODIOPAY por lojista. A carteira e os saques desta demonstração são simulados; carteira própria não faz parte da primeira versão real. O split real ainda está em preparação.
 
+Novos componentes internos: [OAuth, tokens cifrados e pagamentos de teste com comissão](docs/OAUTH.md). A aplicação ODIOPAY foi criada no Mercado Pago segundo o responsável. A integração externa ainda não foi homologada, e esses componentes não estão expostos nas rotas públicas do painel.
+
 ## Abrir o painel
 
 ```powershell

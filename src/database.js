@@ -73,7 +73,20 @@ export function openDatabase(path = ':memory:') {
       BEGIN SELECT RAISE(ABORT, 'journal_is_append_only'); END;
     CREATE TRIGGER IF NOT EXISTS journal_no_delete BEFORE DELETE ON wallet_journal
       BEGIN SELECT RAISE(ABORT, 'journal_is_append_only'); END;
-    PRAGMA user_version = 2;
+    CREATE TABLE IF NOT EXISTS mp_oauth_epochs (
+      merchant_id TEXT PRIMARY KEY REFERENCES merchants(id), epoch INTEGER NOT NULL
+    ) STRICT;
+    CREATE TABLE IF NOT EXISTS mp_oauth_attempts (
+      state_hash TEXT PRIMARY KEY, merchant_id TEXT NOT NULL REFERENCES merchants(id),
+      session_hash TEXT NOT NULL, epoch INTEGER NOT NULL, expires_at INTEGER NOT NULL,
+      sealed TEXT NOT NULL, UNIQUE(merchant_id)
+    ) STRICT;
+    CREATE TABLE IF NOT EXISTS mp_connections (
+      merchant_id TEXT PRIMARY KEY REFERENCES merchants(id), seller_id TEXT NOT NULL UNIQUE,
+      epoch INTEGER NOT NULL, expires_at INTEGER NOT NULL, sealed TEXT NOT NULL,
+      status TEXT NOT NULL CHECK(status IN ('active','refreshing','reconnect_required'))
+    ) STRICT;
+    PRAGMA user_version = 3;
   `);
   return db;
 }

@@ -11,7 +11,7 @@ Decisão do responsável em 16/10/2026: priorizar menor necessidade de capital i
 5. O painel acompanha as vendas processadas pela ODIOPAY, suas tarifas e estados conciliados. Não apresenta o saldo total da conta Mercado Pago como se estivesse custodiado na ODIOPAY.
 6. Recebimento, disponibilidade e retirada de recursos seguem a conta e as regras do Mercado Pago. Saques pela ODIOPAY não fazem parte da primeira versão.
 
-Começar com Checkout Pro hospedado é a proposta técnica para reduzir o trabalho inicial com checkout. Essa escolha ainda precisa de homologação com a aplicação de teste. O objetivo é suportar Pix e cartão conforme os meios habilitados pelo parceiro.
+A escolha atual é Checkout Transparente via Payments API, OAuth e `application_fee`, com Pix e cartão. O responsável informou que a aplicação ODIOPAY para Checkout API foi criada. Faltam contas de teste, ambiente HTTPS e homologação. Orders não é adotada para split 1:1 sem demonstração documentada da cobrança equivalente de comissão.
 
 ## Receita e custos
 
@@ -31,7 +31,7 @@ As tarifas atuais do simulador não representam a tarifa do Mercado Pago. Precis
 | Painel coerente com split | Conectar conta, acompanhar vendas e comissões; carteira simulada identificada como demonstração |
 | Homologar e liberar piloto | Fluxos de teste, devoluções, credencial revogada, falhas e reconciliação comprovados; custos e responsabilidades definidos |
 
-O leitor em src/mercadopago.js continua sendo preparação somente de consulta de teste; OAuth, criação de checkout e split real ainda não foram implementados. Não remover o bloqueio de produção para contornar essas pendências.
+O leitor e os novos serviços de OAuth/criação de pagamentos são componentes de teste, sem exposição nas rotas públicas e sem homologação externa. A criação usa `application_fee`; o split efetivo ainda precisa ser comprovado nas contas de teste. Veja [implementação e pendências](OAUTH.md). Não remover o bloqueio de produção para contornar essas pendências.
 
 ## Fontes oficiais
 
