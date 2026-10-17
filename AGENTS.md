@@ -1,6 +1,6 @@
 # ODIOPAY
 
-- Operação inicial brasileira, BRL, Pix e cartão. Esta entrega é exclusivamente sandbox.
+- Operação inicial brasileira, BRL, Pix e cartão. Objetivo atualizado: cobranças reais com split Mercado Pago, confirmado pelo responsável em 17/10/2026. A execução atual continua em teste até implementar e validar os fluxos de produção; ver docs/PRODUCTION-STATUS.md.
 - Decisão atual de lançamento: split 1:1 Mercado Pago, contas de vendedores conectadas por OAuth e chaves próprias da ODIOPAY por lojista. Carteira própria e saques pela ODIOPAY ficam fora da primeira versão; a carteira existente é apenas simulação. Veja docs/SPLIT.md.
 - Explique decisões e evidências de teste em português.
 - Dinheiro em centavos inteiros; percentuais em basis points; nunca calcular dinheiro com ponto flutuante.

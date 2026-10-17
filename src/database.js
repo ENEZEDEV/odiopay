@@ -86,7 +86,18 @@ export function openDatabase(path = ':memory:') {
       epoch INTEGER NOT NULL, expires_at INTEGER NOT NULL, sealed TEXT NOT NULL,
       status TEXT NOT NULL CHECK(status IN ('active','refreshing','reconnect_required'))
     ) STRICT;
-    PRAGMA user_version = 3;
+    CREATE TABLE IF NOT EXISTS mp_payment_intents (
+      id TEXT PRIMARY KEY, merchant_id TEXT NOT NULL REFERENCES merchants(id),
+      environment TEXT NOT NULL CHECK(environment IN ('test','production')),
+      idempotency_key TEXT NOT NULL, request_digest TEXT NOT NULL,
+      amount_cents INTEGER NOT NULL CHECK(amount_cents BETWEEN 100 AND 100000000),
+      commission_cents INTEGER NOT NULL CHECK(commission_cents >= 0 AND commission_cents < amount_cents),
+      method TEXT NOT NULL CHECK(method IN ('pix','card')),
+      status TEXT NOT NULL CHECK(status IN ('created','sending','requires_reconciliation')),
+      claim_hash TEXT, claimed_at INTEGER, created_at INTEGER NOT NULL,
+      UNIQUE(merchant_id,environment,idempotency_key)
+    ) STRICT;
+    PRAGMA user_version = 4;
   `);
   return db;
 }
